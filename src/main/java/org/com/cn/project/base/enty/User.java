@@ -1,5 +1,7 @@
 package org.com.cn.project.base.enty;
 
+import org.springframework.beans.factory.annotation.Value;
+
 public class User {
     private Integer id;
     private String userName;
