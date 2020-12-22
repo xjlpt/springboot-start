@@ -2,7 +2,35 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.com.cn.project.base.dao.UserMapper">
     <select id="getUserList" resultType="org.com.cn.project.base.enty.User">
-        select * from user;
+        select * from user
     </select>
+    <insert id="insertUserList">
 
+        insert into user(user_name,user_pass,nickname) values
+        <foreach collection="userList" separator="," item="i">
+            (#{i.userName},#{i.userPass},#{i.nickname})
+        </foreach>
+
+    </insert>
+    <select id="getDataList" parameterType="org.com.cn.project.global.Page"
+            resultType="org.com.cn.project.base.enty.User">
+        <![CDATA[
+        select * from user
+        ]]>
+        <where>
+            <if test="userid !=null and userid !='' ">AND user_name like '%' #{userid} '%'</if>
+            <if test="otherid !=null and otherid !='' ">AND user_pass like '%' #{otherid} '%'</if>
+        </where>
+        <![CDATA[order by CAST(id as SIGNED) asc limit #{page},#{rows}]]>
+    </select>
+    <select id="getUserCount" parameterType="org.com.cn.project.global.Page"
+            resultType="integer">
+        <![CDATA[
+        select count(1) from user
+        ]]>
+        <where>
+            <if test="userid !=null and userid !='' ">AND user_name like '%' #{userid} '%'</if>
+            <if test="otherid !=null and otherid !='' ">AND user_pass like '%' #{otherid} '%'</if>
+        </where>
+    </select>
 </mapper>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/layui/css/layui.css}"/>
+    <script th:src="@{/jquery/js/jquery-3.5.1.min.js}" charset="utf-8"></script>
+    <script type="text/javascript" th:src="@{/layer/layer.js}" charset="utf-8"></script>
+    <script type="text/javascript" th:src="@{/layui/layui.js}" charset="utf-8"></script>
+</head>
+<body onkeydown="keyLogin();">
+<div class="demoTable">
+    搜索名称：
+    <div class="layui-inline">
+        <input class="layui-input" name="userid" id="demoReload" autocomplete="off">
+    </div>
+    <button class="layui-btn" id="serch" data-type="reload">搜索</button>
+    <!-- <button class="layui-btn" id="btn" >进入第二个模块</button> -- -->
+    <button class="layui-btn" data-type="getCheckData">批量删除</button>
+    <button class="layui-btn layui-btn-normal"  data-type="addData">添加</button>
+</div>
+<table class="layui-hide" id="test" lay-filter="test"></table>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+</body>
+
+<script type="text/javascript" th:inline="none">
+    layui.use('table',function(){
+        var table = layui.table;
+        var tableIns =table.render({
+            elem: '#test'
+            ,url:'/base/dataList'
+            ,page:true
+            ,limit:10
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{field:'id', width:400, title: 'ID'}/* , sort: true */
+                ,{field:'userName', width:150, title: '用户名'}/* , sort: true */
+                ,{field:'userPass', width:90, title: '用户密码'}
+                ,{field:'nickname', width:320, title: '昵称'}
+                ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:120}
+            ]]
+            ,id: 'testReload'
+        });
+
+        var $ = layui.$, active = {
+            getCheckData: function(){ //获取选中数据JSON.stringify(data)/* 批量删除 */
+                var checkStatus = table.checkStatus('testReload')
+                    ,data = checkStatus.data;
+                deList=[];
+                data.forEach(function(n,i){
+                    deList.push(n.id);
+                });
+                /* layer.alert(deList[0]+"--"+deList[1]); */
+            },
+            addData:function(){	/* 添加 */
+                layer.open({
+                    type: 1,
+                    closeBtn: false,
+                    shift: 7,
+                    btn: ['确定', '关闭'],
+                    yes: function(index){
+                        var urls="../Menu/addMenu";
+                        $.ajax({
+                            url:urls,
+                            dataType:"json",
+                            method:'POST',
+                            data:{"id":$("#id").val(),"name":$("#name").val(),"fid":$("#fid").val(),"url":$("#url").val(),"state":$("#state").val()},
+                            success:function(res){
+                                if(res.code==200){
+                                    layer.msg("添加成功！",{time:2000});
+                                    refresh();
+                                    //window.location.reload();
+                                }else{
+                                    layer.msg("添加失败！",{time:2000});
+                                }
+                            },
+                            error:function(request){
+                                layer.msg("未连接！");
+                            }
+                        });
+                        return false;
+                    },
+                    shadeClose: true,
+                    content: "<div style='width:360px;'><div class='layui-form-item'><label class='layui-form-label'>ID:</label><div class='layui-input-block'><input style='margin-top:3%;'  id='id' class='form-control' type='text' name='awardDescription' value=''/></div></div>"+
+                        "<div  class='layui-form-item'><label class='layui-form-label'>菜单名称:</label><div class='layui-input-block'><input style='margin-top:3%;'  id='name' class='form-control' type='text' value=''/></div></div>"+
+                        "<div  class='layui-form-item'><label class='layui-form-label'>父编号:</label><div class='layui-input-block'><input style='margin-top:3%;'  id='fid' class='form-control' type='text' name='tel' value=''/></div></div>"+
+                        "<div  class='layui-form-item'><label class='layui-form-label'>URL:</label><div class='layui-input-block'><input style='margin-top:3%;'  id='url' class='form-control' type='text' name='tel' value=''/></div></div>"+
+                        "<div  class='layui-form-item'><label class='layui-form-label'>状态:</label><div class='layui-input-block'><input style='margin-top:3%;'  id='state' class='form-control' type='text' name='tel' value=''/></div></div>"
+
+                });
+            }
+            ,
+            reload: function(){
+                var demoReload = $('#demoReload');
+
+                //执行重载
+                table.reload('testReload', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    ,method: 'POST'
+                    ,where: {
+                        userid: demoReload.val()
+                    }
+
+                });
+            }
+        };
+        $('.demoTable .layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+        //监听行工具事件
+        table.on('tool(test)', function(obj){
+            var data = obj.data;
+
+            //console.log(obj)
+            if(obj.event === 'del'){/* index */
+                var ID=data.id;
+                layer.confirm('真的删除行么', function(index){
+                    /*  obj.del();
+                     layer.close(index); */
+                    var urls="../Menu/delMenu";
+                    $.ajax({
+                        url:urls,
+                        dataType:"json",
+                        method:'POST',
+                        data:{"id":data.id},
+                        success:function(res){
+                            if(res.code==200){
+                                layer.msg("删除成功！",{time:2000});
+                                refresh();
+                                //window.location.reload();
+                            }else{
+                                layer.msg("删除失败！",{time:2000});
+                            }
+                        },
+                        error:function(request){
+                            layer.msg("未连接！");
+                        }
+                    });
+                    return false;
+
+                });
+            } else if(obj.event === 'edit'){
+                layer.open({
+                    type: 1,
+                    closeBtn: false,
+                    shift: 7,
+                    btn: ['确定', '关闭'],
+                    yes: function(index){
+                        var urls="/Hdemo/Menu/modifyMenu";
+                        $.ajax({
+                            url:urls,
+                            dataType:"json",
+                            method:'POST',
+                            data:{"id":data.id,"name":$("#modify_name").val(),"fid":$("#modify_fid").val(),"url":$("#modify_url").val(),"state":$("#modify_state").val()},
+                            success:function(res){
+                                layer.msg("修改成功！",{time:2000});
+                                refresh();
+                            },
+                            error:function(request){
+                                layer.msg("未连接！");
+                            }
+                        });
+                        return false;
+                    },
+                    shadeClose: true,
+                    content: "<div style='width:360px;'><div class='layui-form-item'><label class='layui-form-label'>菜单名称:</label><div class='layui-input-block'><input style='margin-top:3%;'  id='modify_name' class='form-control' type='text'  value='"+data.name+"'/></div></div>"+
+                        "<div  class='layui-form-item'><label class='layui-form-label'>父编号:</label><div class='layui-input-block'><input style='margin-top:3%;'  id='modify_fid' class='form-control' type='text' value='"+data.fid+"'/></div></div>"+
+                        "<div  class='layui-form-item'><label class='layui-form-label'>地址:</label><div class='layui-input-block'><input style='margin-top:3%;'  id='modify_url' class='form-control' type='text' value='"+data.url+"'/></div></div>"+
+                        "<div  class='layui-form-item'><label class='layui-form-label'>状态:</label><div class='layui-input-block'><input style='margin-top:3%;'  id='modify_state' class='form-control' type='text' value=''/></div></div>"
+                });
+
+            }
+
+
+        });
+        $(document).on('click','#btn',function(){
+
+            window.location.href="Http://127.0.0.1:8280/Hdemo/Login/User?jwt="+localStorage.getItem("jwt");
+        });
+        function refresh(){
+            var demoReload = $('#demoReload');
+            //执行重载
+            table.reload('testReload', {
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+                ,where: {
+                    userid: demoReload.val()
+                }
+            });
+        }
+    });
+    function keyLogin() {
+        if (event.keyCode == 13) //按Enter键的键值为13
+            document.getElementById("serch").click(); //调用查询按钮的登录事件
+    }
+</script>
+
+</html>

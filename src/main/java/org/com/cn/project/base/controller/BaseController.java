@@ -2,8 +2,11 @@ package org.com.cn.project.base.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.ibatis.annotations.Param;
 import org.com.cn.project.base.enty.User;
 import org.com.cn.project.base.service.IUserService;
+import org.com.cn.project.global.Page;
+import org.com.cn.project.global.ResultMap;
 import org.com.cn.project.util.ConstantUtils;
 import org.com.cn.project.util.Excel.ExcelTemplate;
 import org.com.cn.project.util.Excel.ExcelUtils;
@@ -15,9 +18,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -68,14 +73,31 @@ public class BaseController {
     @RequestMapping("ceshi")
     public String ceshi(ModelMap map) {
 
-        map.addAttribute("name", "测试");
+//        map.addAttribute("name", "测试");
         return "index";
     }
+
+    @RequestMapping("pageOfDataList")
+    public String pageOfDataList(ModelMap map){
+
+        return "dataList";
+    }
+
+    @RequestMapping("dataList")
+    @ResponseBody
+    public Object dataList(Page page, @RequestParam("limit") int limit) {
+        ConstantUtils.getPage(limit, page);
+        List<User> userList = userService.getUserList(page);
+        int count = userService.getUserCount(page);
+        page.setTotalRecord(count);
+        return new ResultMap<List<User>>("", userList, 0, count);
+    }
+
 
     @RequestMapping(value = "/importData", method = RequestMethod.POST)
     @ResponseBody
     public String importData(HttpServletRequest request) {
-        JSON json = new JSONObject();
+        HashMap<String, String> map = new HashMap<>();
         String code = "0";
         String msg = "";
 
@@ -84,9 +106,10 @@ public class BaseController {
             MultipartFile file = multipartRequest.getFile("file");
             if (file.getOriginalFilename().endsWith(".xls") || file.getOriginalFilename().endsWith(".xlsx")) {
                 Map<String, String> errorMsg = new HashMap<String, String>();
-                List<User> excelDataList = ExcelUtils.readExcel(file, ConstantUtils.TEMPLATE_IMPORT_TITLE, ConstantUtils.TEMPLATE_EXPORT_COLUMN, User.class, null, errorMsg, false);
+                List<User> excelDataList = ExcelUtils.readExcel(file, ConstantUtils.TEMPLATE_IMPORT_TITLE, ConstantUtils.TEMPLATE_IMPORT_COLUMN, User.class, null, errorMsg, false);
                 if (null != excelDataList) {
                     //根据项目预算代码和GRP系统编码比较判断项目是否存在
+                    userService.insertUserList(excelDataList);
                     code = "1";
                 } else {
                     code = "2";
@@ -101,7 +124,8 @@ public class BaseController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        return null;
+        map.put("code", code);
+        map.put("msg", msg);
+        return JSON.toJSONString(map);
     }
 }
