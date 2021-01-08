@@ -42,12 +42,13 @@ public class BaseController {
 
     @RequestMapping("getList")
     @ResponseBody
-    public Object getList(HttpServletRequest request, HttpServletResponse response) {
-        List<User> userList = userService.getUserList();
+    public Object getList(HttpServletRequest request, HttpServletResponse response,User user) {
+        List<User> userList = userService.getUserListByParms(user);
+        HashMap<String,String> map = new HashMap<>();
+        JSONObject json = new JSONObject();
         String path = Thread.currentThread().getContextClassLoader().getResource("").getPath();
         String templatePath = templateConfig.getTemplatePath();
         String templateFileName = templateConfig.getTemplateFileName();
-        System.out.println(Thread.currentThread().getContextClassLoader().getResource("").getPath() + "template");
         //模板文件路径
         String templateFilePath = path + templatePath + templateFileName;
         //临时文件名
@@ -66,8 +67,11 @@ public class BaseController {
         boolean flag = ExcelTemplate.generateExcel(userList, User.class, ConstantUtils.TEMPLATE_EXPORT_COLUMN, true, newName, templateFilePath, targetFilePath);
         if (flag) {
             ExcelTemplate.downloadWithDelete(targetFilePath, newName + ".xlsx", response);
+            map.put("code","200");
+
         }
-        return userList;
+        json = JSON.parseObject(map.toString());
+        return json;
     }
 
     @RequestMapping("ceshi")

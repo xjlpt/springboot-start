@@ -13,4 +13,5 @@ public interface IUserService {
     List<User> getUserList(Page page);
 
     int getUserCount(Page page);
+    List<User> getUserListByParms(User user);
 }

@@ -36,4 +36,11 @@ public class UserServiceImpl implements IUserService {
     public int getUserCount(Page page) {
         return userMapper.getUserCount(page);
     }
+
+    @Override
+    public List<User> getUserListByParms(User user) {
+        return userMapper.getUserListByParms(user);
+    }
+
+
 }

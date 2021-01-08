@@ -17,14 +17,15 @@
     </div>
     <button class="layui-btn" id="serch" data-type="reload">搜索</button>
     <!-- <button class="layui-btn" id="btn" >进入第二个模块</button> -- -->
-    <button class="layui-btn" data-type="getCheckData">批量删除</button>
-    <button class="layui-btn layui-btn-normal"  data-type="addData">添加</button>
+<!--    <button class="layui-btn" data-type="getCheckData">批量删除</button>-->
+<!--    <button class="layui-btn layui-btn-normal"  data-type="addData">添加</button>-->
+    <button class="layui-btn" data-type="exportData">批量导出</button>
 </div>
 <table class="layui-hide" id="test" lay-filter="test"></table>
-<script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-</script>
+<!--<script type="text/html" id="barDemo">-->
+<!--    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>-->
+<!--    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>-->
+<!--</script>-->
 
 </body>
 
@@ -42,7 +43,7 @@
                 ,{field:'userName', width:150, title: '用户名'}/* , sort: true */
                 ,{field:'userPass', width:90, title: '用户密码'}
                 ,{field:'nickname', width:320, title: '昵称'}
-                ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:120}
+                // ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:120}
             ]]
             ,id: 'testReload'
         });
@@ -109,6 +110,30 @@
                     }
 
                 });
+            },
+        exportData: function (){
+            var userName = $("#demoReload").val();
+
+            window.location.href="/base/getList?userName="+userName;
+            return false;
+            $.ajax({
+                url:'/base/getList',
+                dataType:"json",
+                method:'GET',
+                data:{"userName":userName},
+                success:function(res){
+                    if(res.code=="200"){
+                        layer.msg("导出成功！",{time:2000});
+                        refresh();
+                        //window.location.reload();
+                    }else{
+                        layer.msg("导出失败！",{time:2000});
+                    }
+                },
+                error:function(request){
+                    layer.msg("未连接！");
+                }
+            });
             }
         };
         $('.demoTable .layui-btn').on('click', function(){

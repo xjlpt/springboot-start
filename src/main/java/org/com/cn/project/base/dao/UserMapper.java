@@ -15,4 +15,6 @@ public interface UserMapper {
     public List<User> getDataList(Page page);
 
     int getUserCount(Page page);
+
+    public List<User> getUserListByParms(User user);
 }

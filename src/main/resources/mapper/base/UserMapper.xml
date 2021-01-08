@@ -33,4 +33,14 @@
             <if test="otherid !=null and otherid !='' ">AND user_pass like '%' #{otherid} '%'</if>
         </where>
     </select>
+    <select id="getUserListByParms" parameterType="org.com.cn.project.base.enty.User"
+            resultType="org.com.cn.project.base.enty.User">
+        <![CDATA[
+        select * from user
+        ]]>
+        <where>
+            <if test="userName !=null and userName !='' ">AND user_name like '%' #{userName} '%'</if>
+        </where>
+    </select>
+
 </mapper>
