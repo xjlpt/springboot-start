@@ -9,6 +9,7 @@ public class TemplateConfig {
 
     private String templatePath;
     private String templateFileName;
+    private String templateInOutPutName;
 
     public String getTemplatePath() {
         return templatePath;
@@ -24,5 +25,13 @@ public class TemplateConfig {
 
     public void setTemplateFileName(String templateFileName) {
         this.templateFileName = templateFileName;
+    }
+
+    public String getTemplateInOutPutName() {
+        return templateInOutPutName;
+    }
+
+    public void setTemplateInOutPutName(String templateInOutPutName) {
+        this.templateInOutPutName = templateInOutPutName;
     }
 }

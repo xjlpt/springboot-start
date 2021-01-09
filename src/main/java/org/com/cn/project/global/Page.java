@@ -23,6 +23,9 @@ public class Page implements Serializable {
     private String otherid;
     private String nickname;
     private String email;
+    private String globalValue;
+    private String globalValue1;
+    private String globalValue2;
 
     public String getKeyType() {
         return keyType;
@@ -117,10 +120,34 @@ public class Page implements Serializable {
         this.email = email;
     }
 
+    public String getGlobalValue() {
+        return globalValue;
+    }
+
+    public void setGlobalValue(String globalValue) {
+        this.globalValue = globalValue;
+    }
+
+    public String getGlobalValue1() {
+        return globalValue1;
+    }
+
+    public void setGlobalValue1(String globalValue1) {
+        this.globalValue1 = globalValue1;
+    }
+
+    public String getGlobalValue2() {
+        return globalValue2;
+    }
+
+    public void setGlobalValue2(String globalValue2) {
+        this.globalValue2 = globalValue2;
+    }
+
     public Page() {
     }
 
-    public Page(Integer page, Integer rows, Integer totalRecord, Integer totalPage, String keyType, String keyWord, Integer start, String userid, String otherid, String nickname, String email) {
+    public Page(Integer page, Integer rows, Integer totalRecord, Integer totalPage, String keyType, String keyWord, Integer start, String userid, String otherid, String nickname, String email, String globalValue, String globalValue1, String globalValue2) {
         this.page = page;
         this.rows = rows;
         this.totalRecord = totalRecord;
@@ -132,6 +159,9 @@ public class Page implements Serializable {
         this.otherid = otherid;
         this.nickname = nickname;
         this.email = email;
+        this.globalValue = globalValue;
+        this.globalValue1 = globalValue1;
+        this.globalValue2 = globalValue2;
     }
 
     @Override
@@ -148,6 +178,9 @@ public class Page implements Serializable {
                 ", otherid='" + otherid + '\'' +
                 ", nickname='" + nickname + '\'' +
                 ", email='" + email + '\'' +
+                ", globalValue='" + globalValue + '\'' +
+                ", globalValue1='" + globalValue1 + '\'' +
+                ", globalValue2='" + globalValue2 + '\'' +
                 '}';
     }
 

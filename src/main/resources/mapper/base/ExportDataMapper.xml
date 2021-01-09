@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.com.cn.project.base.dao.ExportDataMapper">
+    <select id="getExportDataList" parameterType="org.com.cn.project.global.Page"
+            resultType="org.com.cn.project.base.enty.exportData">
+        <![CDATA[
+        select * from export_data
+        ]]>
+        <where>
+            <if test="globalValue !=null and globalValue !='' ">AND string_code like '%' #{globalValue} '%'</if>
+        </where>
+        <![CDATA[order by CAST(id as SIGNED) asc limit #{page},#{rows}]]>
+    </select>
+    <select id="getExportDataCount" parameterType="org.com.cn.project.global.Page"
+            resultType="integer">
+        <![CDATA[
+        select count(1) from export_data
+        ]]>
+        <where>
+            <if test="globalValue !=null and globalValue !='' ">AND string_code like '%' #{globalValue} '%'</if>
+        </where>
+    </select>
+    <select id="getExportDataParams" parameterType="org.com.cn.project.base.enty.exportData"
+            resultType="org.com.cn.project.base.enty.exportData">
+        <![CDATA[
+        select * from export_data
+        ]]>
+        <where>
+            <if test="stringCode !=null and stringCode !='' ">AND string_code like '%' #{stringCode} '%'</if>
+        </where>
+    </select>
+</mapper>

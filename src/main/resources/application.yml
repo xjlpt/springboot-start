@@ -40,7 +40,7 @@ server:
 template:
   templatePath: /template/
   templateFileName: template.xlsx
-
+  templateInOutPutName: template_inoutPut.xlsx
 
 
 
