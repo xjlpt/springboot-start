@@ -138,7 +138,7 @@
                    layer.close(index);
                  },
                  shadeClose: true,
-                 content: "<div style='width:360px;'><div class='layui-form-item'><input type='file' name='infile' id='uploadInText' /><div class='layui-input-block'><input class='btn' type='button' style='width:70px;' value='导入数据' onclick='importData(1)' /></div></div>"
+                 content: "<div style='width:360px;'><div class='layui-form-item'><input type='file' name='infile' id='uploadInText' /><div class='layui-input-block'><input class='btn' type='button' style='width:70px;' value='导入数据' onclick='importInData()' /></div></div>"
              });
             },
          outputImportData:function (){
@@ -151,7 +151,7 @@
                      layer.close(index);
                  },
                  shadeClose: true,
-                 content: "<div style='width:360px;'><div class='layui-form-item'><input type='file' name='outfile' id='uploadOutText' /><div class='layui-input-block'><input class='btn' type='button' style='width:70px;' value='导入数据' onclick='importData(2)' /></div></div>"
+                 content: "<div style='width:360px;'><div class='layui-form-item'><input type='file' name='outfile' id='uploadOutText' /><div class='layui-input-block'><input class='btn' type='button' style='width:70px;' value='导入数据' onclick='importOutData()' /></div></div>"
              });
             }
 
@@ -249,14 +249,9 @@
     }
 </script>
 <script type="text/javascript">
-    function importData(identify) {
+    function importInData(identify) {
         var fileInput = null;
-        if(identify==1){
-             fileInput = $('#uploadInText').get(0).files[0];
-        }else{
              fileInput = $('#uploadOutText').get(0).files[0];
-        }
-
         if (fileInput) {
 
             var formData = new FormData();
@@ -290,16 +285,10 @@
         }
     }
 
-    function importData(identify) {
+    function importOutData() {
         var fileInput = null;
-        if(identify==1){
-            fileInput = $('#uploadInText').get(0).files[0];
-        }else{
             fileInput = $('#uploadOutText').get(0).files[0];
-        }
-
         if (fileInput) {
-
             var formData = new FormData();
             formData.append("file", fileInput);
             $.ajax({
