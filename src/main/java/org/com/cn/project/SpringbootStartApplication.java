@@ -10,19 +10,19 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 @MapperScan("org.com.cn.project.*.dao")
 @EnableTransactionManagement
-public class SpringbootStartApplication extends SpringBootServletInitializer {
-
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(SpringbootStartApplication.class);
-    }
+public class SpringbootStartApplication  {
+//extends SpringBootServletInitializer
+//    @Override
+//    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+//        return application.sources(SpringbootStartApplication.class);
+//    }
+//
+//    public static void main(String[] args) {
+//        SpringApplication.run(SpringbootStartApplication.class, args);
+//    }
 
     public static void main(String[] args) {
         SpringApplication.run(SpringbootStartApplication.class, args);
     }
-
-//    public static void main(String[] args) {
-//        SpringApplication.run(SpringbootStartApplication.class, args);
-//    }
 
 }
