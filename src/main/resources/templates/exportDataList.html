@@ -251,14 +251,14 @@
 <script type="text/javascript">
     function importInData(identify) {
         var fileInput = null;
-             fileInput = $('#uploadOutText').get(0).files[0];
+             fileInput = $('#uploadInText').get(0).files[0];
         if (fileInput) {
 
             var formData = new FormData();
             formData.append("file", fileInput);
             $.ajax({
                 type: "post",
-                url: "/base/importData",
+                url: "/exportData/importInputData",
                 data: formData,
                 processData: false,
                 contentType: false,
@@ -293,7 +293,7 @@
             formData.append("file", fileInput);
             $.ajax({
                 type: "post",
-                url: "/base/importData",
+                url: "/exportData/importOutputData",
                 data: formData,
                 processData: false,
                 contentType: false,
