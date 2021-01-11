@@ -13,4 +13,8 @@ public interface IExportDataService {
 
     List<exportData> getExportDataParams(exportData data);
 
+    void insertInData(List<exportData> exportData);
+
+    void updateInData(List<exportData> exportData);
+
 }

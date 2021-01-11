@@ -29,4 +29,22 @@
             <if test="stringCode !=null and stringCode !='' ">AND string_code like '%' #{stringCode} '%'</if>
         </where>
     </select>
+    <insert id="insertInData">
+
+        insert into export_data(string_code,string_code_status,distribution_county,remark,intput_date) values
+        <foreach collection="exportDataList" separator="," item="i">
+            (#{i.stringCode},#{i.stringCodeStatus},#{i.distributionCounty},#{i.remark},#{i.intputDate})
+        </foreach>
+
+    </insert>
+
+    <update id="updateInData">
+        update export_data set string_code_status = case string_code
+        <foreach collection="dataList" item="item" index="index" open="" separator="" close="">
+            WHEN #{item.stringCode} THEN #{item.stringCodeStatus}
+        </foreach>
+        END,output_date = sysdate()
+
+    </update>
+
 </mapper>

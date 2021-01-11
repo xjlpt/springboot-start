@@ -42,17 +42,27 @@
             ,cols: [[
                 {type: 'checkbox', fixed: 'left'}
                 ,{field:'id', width:20, title: 'ID'}/* , sort: true */
-                ,{field:'stringCode', width:150, title: '串码'}/* , sort: true */
+                ,{field:'stringCode', width:250, title: '串码'}/* , sort: true */
                 ,{field:'stringCodeStatus', width:90, title: '状态码'}
                 ,{field:'distributionCounty', width:320, title: '分配县市'}
                 ,{field:'remark', width:90, title: '类型'}
-                ,{field:'intputDate', width:200, title: '入库时间', sort: true, minWidth: 100, templet: "<div>{{layui.util.toDateString(d.intputDate.date, 'yyyy-MM-dd HH:mm:ss')}}</div>"}
+                ,{field:'intputDate', width:200, title: '入库时间', sort: true, minWidth: 100, templet:function (d) {
+                        if(d.intputDate!=null){
+                            var star_addtime = layui.util.toDateString(new Date(d.intputDate).getTime(), "yyyy-MM-dd");
+                            return '<div>'+ star_addtime +'</div>'
+                        }else{
+                            return '<div></div>'
+                        }
+
+                    } }
                 ,{field:'outputDate', width:200, title: '出库时间', sort: true, minWidth: 100, templet:function (d) {
                     if(d.outputDate!=null){
-                      return "<div>{{layui.util.toDateString(d.outputDate.date, 'yyyy-MM-dd HH:mm:ss')}}</div>";
+                        var star_addtime = layui.util.toDateString(new Date(d.outputDate).getTime(), "yyyy-MM-dd");
+                        return '<div>'+ star_addtime +'</div>'
                     }else{
-                        return '';
+                        return '<div></div>'
                     }
+
                     } }
                 // ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:120}
             ]]
@@ -136,6 +146,7 @@
                  btn: ['确定', '关闭'],
                  yes: function(index){
                    layer.close(index);
+                     refresh();
                  },
                  shadeClose: true,
                  content: "<div style='width:360px;'><div class='layui-form-item'><input type='file' name='infile' id='uploadInText' /><div class='layui-input-block'><input class='btn' type='button' style='width:70px;' value='导入数据' onclick='importInData()' /></div></div>"
@@ -149,6 +160,7 @@
                  btn: ['确定', '关闭'],
                  yes: function(index){
                      layer.close(index);
+                     refresh();
                  },
                  shadeClose: true,
                  content: "<div style='width:360px;'><div class='layui-form-item'><input type='file' name='outfile' id='uploadOutText' /><div class='layui-input-block'><input class='btn' type='button' style='width:70px;' value='导入数据' onclick='importOutData()' /></div></div>"
@@ -230,6 +242,7 @@
 
             window.location.href="Http://127.0.0.1:8280/Hdemo/Login/User?jwt="+localStorage.getItem("jwt");
         });
+
         function refresh(){
             var demoReload = $('#demoReload');
             //执行重载
@@ -237,21 +250,27 @@
                 page: {
                     curr: 1 //重新从第 1 页开始
                 }
+                ,method: 'POST'
                 ,where: {
-                    userid: demoReload.val()
+                    globalValue: demoReload.val()
                 }
+
             });
         }
+
+
     });
     function keyLogin() {
         if (event.keyCode == 13) //按Enter键的键值为13
             document.getElementById("serch").click(); //调用查询按钮的登录事件
     }
+
+
 </script>
 <script type="text/javascript">
     function importInData(identify) {
         var fileInput = null;
-             fileInput = $('#uploadInText').get(0).files[0];
+        fileInput = $('#uploadInText').get(0).files[0];
         if (fileInput) {
 
             var formData = new FormData();
@@ -265,11 +284,7 @@
                 dataType: "json",
                 success: function (data) {
                     if (data.code == "1") {
-                        // alert("上传成功");
-                        // layer.close(index);
-                        // jQuery("#importDataForm")[0].reset();
-                        layer.alert('导入成功！', {icon: 6});
-                        // searchBudget();
+                        layer.msg("导入成功！",{time:2000});
                     } else {
                         // alert("上传失败");
                         layer.alert(data.msg, {icon: 6});
@@ -287,7 +302,7 @@
 
     function importOutData() {
         var fileInput = null;
-            fileInput = $('#uploadOutText').get(0).files[0];
+        fileInput = $('#uploadOutText').get(0).files[0];
         if (fileInput) {
             var formData = new FormData();
             formData.append("file", fileInput);
@@ -300,11 +315,7 @@
                 dataType: "json",
                 success: function (data) {
                     if (data.code == "1") {
-                        // alert("上传成功");
-                        // layer.close(index);
-                        // jQuery("#importDataForm")[0].reset();
-                        layer.alert('导入成功！', {icon: 6});
-                        // searchBudget();
+                        layer.msg("导入成功！",{time:2000});
                     } else {
                         // alert("上传失败");
                         layer.alert(data.msg, {icon: 6});
@@ -319,7 +330,6 @@
             layer.alert('请选择文件！', {icon: 6});
         }
     }
-
     function dateToStr(date) {
         var time = new Date(date.time);
         var y = time.getFullYear();

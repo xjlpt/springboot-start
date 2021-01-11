@@ -69,8 +69,7 @@ public class ExportDataController {
                 Map<String, String> errorMsg = new HashMap<String, String>();
                 List<exportData> excelDataList = ExcelUtils.readExcel(file, ConstantUtils.TEMPLATE_IMPORT_INPUT_EXPORTDATA_TITLE, ConstantUtils.TEMPLATE_IMPORT_INPUT_EXPORTDATA_COLUMN, exportData.class, null, errorMsg, false);
                 if (null != excelDataList) {
-                    //根据项目预算代码和GRP系统编码比较判断项目是否存在
-//                    userService.insertUserList(excelDataList);
+                    dataService.insertInData(excelDataList);
                     code = "1";
                 } else {
                     code = "2";
@@ -104,8 +103,7 @@ public class ExportDataController {
                 Map<String, String> errorMsg = new HashMap<String, String>();
                 List<exportData> excelDataList = ExcelUtils.readExcel(file, ConstantUtils.TEMPLATE_IMPORT_OUTPUT_EXPORTDATA_TITLE, ConstantUtils.TEMPLATE_IMPORT_OUTPUT_EXPORTDATA_COLUMN, exportData.class, null, errorMsg, false);
                 if (null != excelDataList) {
-                    //根据项目预算代码和GRP系统编码比较判断项目是否存在
-//                    userService.insertUserList(excelDataList);
+                    dataService.updateInData(excelDataList);
                     code = "1";
                 } else {
                     code = "2";

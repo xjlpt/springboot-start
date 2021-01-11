@@ -29,4 +29,14 @@ public class ExportDataServiceImpl implements IExportDataService {
     public List<exportData> getExportDataParams(exportData data) {
         return exportDataMapper.getExportDataParams(data);
     }
+
+    @Override
+    public void insertInData(List<exportData> exportData) {
+        exportDataMapper.insertInData(exportData);
+    }
+
+    @Override
+    public void updateInData(List<exportData> exportData) {
+        exportDataMapper.updateInData(exportData);
+    }
 }
