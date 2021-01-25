@@ -7,7 +7,7 @@
         select * from export_data
         ]]>
         <where>
-            <if test="globalValue !=null and globalValue !='' ">AND string_code like '%' #{globalValue} '%'</if>
+            <if test="globalValue !=null and globalValue !='' ">AND remark like '%' #{globalValue} '%'</if>
         </where>
         <![CDATA[order by CAST(id as SIGNED) asc limit #{page},#{rows}]]>
     </select>
@@ -17,7 +17,7 @@
         select count(1) from export_data
         ]]>
         <where>
-            <if test="globalValue !=null and globalValue !='' ">AND string_code like '%' #{globalValue} '%'</if>
+            <if test="globalValue !=null and globalValue !='' ">AND remark like '%' #{globalValue} '%'</if>
         </where>
     </select>
     <select id="getExportDataParams" parameterType="org.com.cn.project.base.enty.exportData"
@@ -26,7 +26,7 @@
         select * from export_data
         ]]>
         <where>
-            <if test="stringCode !=null and stringCode !='' ">AND string_code like '%' #{stringCode} '%'</if>
+            <if test="remark !=null and remark !='' ">AND remark like '%' #{remark} '%'</if>
         </where>
     </select>
     <insert id="insertInData">
@@ -44,7 +44,11 @@
             WHEN #{item.stringCode} THEN #{item.stringCodeStatus}
         </foreach>
         END,output_date = sysdate()
-
+        WHERE
+        string_code in
+        <foreach collection="dataList" item="item" index="index" open="(" separator="," close=")">
+            #{item.stringCode}
+        </foreach>
     </update>
 
 </mapper>

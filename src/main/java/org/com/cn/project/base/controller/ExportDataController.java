@@ -14,6 +14,7 @@ import org.com.cn.project.util.TemplateConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,8 +26,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -125,7 +125,7 @@ public class ExportDataController {
 
     @RequestMapping("exportInOutData")
     @ResponseBody
-    public Object getList(HttpServletRequest request, HttpServletResponse response, exportData data) {
+    public Object getList(HttpServletRequest request, HttpServletResponse response, exportData data) throws IOException {
         List<exportData> dataList = dataService.getExportDataParams(data);
         HashMap<String,String> map = new HashMap<>();
         JSONObject json = new JSONObject();
@@ -133,11 +133,17 @@ public class ExportDataController {
         String templatePath = templateConfig.getTemplatePath();
         String templateFileName = templateConfig.getTemplateInOutPutName();
         //模板文件路径
-        String templateFilePath = path + templatePath + templateFileName;
+//        String templateFilePath = path + templatePath + templateFileName;
+//        String templateFilePath = "D:/" + templateFileName;
+        InputStream templateFilePath = this.getClass().getClassLoader().getResourceAsStream(templateFileName);
+        System.out.println(templateFilePath+"-----测试");
+
         //临时文件名
         String fileName = UUID.randomUUID().toString().replace("-", "") + ".xlsx";
         //临时文件存储的文件夹路径
-        String targetPath = path + "/temp/standingbook/";
+//        String targetPath = path + "/temp/standingbook/";
+        String targetPath = "D:" + "/temp/";
+//        String targetPath = this.getClass().getClassLoader().getResourceAsStream("/temp/standingbook/");
         //判断文件夹是否存在，不存在则创建
         File pathFile = new File(targetPath);
         if (!pathFile.exists() || !pathFile.isDirectory()) {
@@ -147,7 +153,7 @@ public class ExportDataController {
         String targetFilePath = targetPath + fileName;
         //下载时显示文件名
         String newName = "列表" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-        boolean flag = ExcelTemplate.generateExcel(dataList, exportData.class, ConstantUtils.TEMPLATE_EXPORTDATA_COLUMN, true, newName, templateFilePath, targetFilePath);
+        boolean flag = ExcelTemplate.generateExcel(dataList, exportData.class, ConstantUtils.TEMPLATE_EXPORTDATA_COLUMN, true, newName, templateFilePath.toString(), targetFilePath);
         if (flag) {
             ExcelTemplate.downloadWithDelete(targetFilePath, newName + ".xlsx", response);
             map.put("code","200");
